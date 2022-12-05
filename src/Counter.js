@@ -1,28 +1,43 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
+
+
 function Counter(props) {
-    const {delta} = props
-    const {max} = props
-    const [count, setCount] = useState(1)
     
-    function incr(){
+    const {max,delta,maxofboth,Reset,needToReset,CheckMaxofboth} = props
+    const [count, setCount] = useState(1)
+
+    
+    
+  useEffect(()=>{
+    if(needToReset){
+      setCount(0)
+      Reset(false)
+    }
+  },[needToReset,Reset])
+    
+    function incr() {
         setCount(
             function (oldCount){
-            if (oldCount + delta <= max)
+             if (oldCount + delta <= max)
                 return oldCount + delta
-                else{
-                    return 0
-                }
-            }
-        )
-        console.log(count)
-    }
-    function reset (){
-        setCount(0)
-           
-        
-    }
+            
+              if(oldCount + delta > maxofboth)
+               CheckMaxofboth(oldCount)
+                 return 0
 
-   
+                }
+            
+        )
+        if (count + delta > maxofboth)
+          CheckMaxofboth(count+delta)
+       
+    }
+    function reset(){
+      Reset(true)
+      setCount(0)
+    }
+           
+  
     return (
       <div>
         <h1>Counter</h1>
@@ -31,6 +46,6 @@ function Counter(props) {
         <button onClick={reset}> Click to reset the count</button>
       </div>
     );
-  }
+    }
   
   export default Counter;
